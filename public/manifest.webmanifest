@@ -1,0 +1,11 @@
+{
+  "name": "Vitor de Melo · Sites que vendem",
+  "short_name": "Vitor de Melo",
+  "start_url": ".",
+  "scope": ".",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#03080a",
+  "theme_color": "#03080a",
+  "lang": "pt-BR"
+}
