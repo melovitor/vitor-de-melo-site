@@ -357,3 +357,8 @@ html.lite .card::after,html.lite .plan::after{display:none}
 html.lite .hero__title .serif,html.lite .final__t .serif{text-shadow:none}
 html.lite .progress i{box-shadow:none}
 html.lite .btn--cy:hover{box-shadow:none}
+
+/* travar rolagem lateral (iOS ignora overflow-x só no body) */
+html,body{overflow-x:clip;max-width:100%;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom}
+body{position:relative;width:100%}
+main,section{max-width:100%}
