@@ -3,3 +3,4 @@ dist/
 .claude/
 # módulo de som que foi desativado e não é usado
 src/audio.js
+publicar.sh
