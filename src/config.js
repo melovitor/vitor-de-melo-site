@@ -1,5 +1,5 @@
 // AJUSTAR: número só com dígitos, país + DDD
-export const whatsapp = '5511900000000';
+export const whatsapp = '5511970283255';
 
 export const mensagens = {
   geral: 'Olá! Vi seu site e quero conversar sobre um projeto.',

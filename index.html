@@ -17,6 +17,8 @@
 <link rel="stylesheet" href="/src/styles.css">
 <style>html,body{background:#03080a}</style>
 <script>
+  // celular/toque: modo leve (menos efeitos pesados, mantém 60 fps no iPhone)
+  if (matchMedia('(pointer:coarse)').matches || innerWidth < 700) document.documentElement.classList.add('lite');
   // o site sempre abre no começo, inclusive ao recarregar
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   addEventListener('beforeunload', function () { scrollTo(0, 0); });

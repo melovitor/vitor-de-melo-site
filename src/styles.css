@@ -341,3 +341,19 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}
 .hero__sub{margin-top:clamp(18px,3.2vh,28px)}
 .hero__cta{margin-top:clamp(18px,3.2vh,28px)}
 .badge{margin-top:clamp(20px,3.4vh,30px)}
+
+/* ===== v6: WhatsApp por cima de tudo, só nas seções do meio ===== */
+.fab{z-index:200;opacity:0;pointer-events:none;transform:translateY(14px) scale(.9);transition:opacity .35s,transform .35s}
+.fab.on{opacity:1;pointer-events:auto;transform:none}
+.fab.on:hover{transform:scale(1.08)}
+
+/* ===== modo leve (celular): menos efeitos pesados para manter os FPS ===== */
+html.lite .grain,html.lite .vignette{display:none}
+html.lite .orb{filter:none;opacity:.35;will-change:auto}
+html.lite .glass,html.lite .btn--glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(12,28,32,.8);box-shadow:none}
+html.lite .plan--hot{background:linear-gradient(160deg,rgba(14,60,68,.9),rgba(12,28,32,.85));box-shadow:0 0 40px -10px rgba(34,227,245,.3)}
+html.lite .card,html.lite .plan{will-change:auto}
+html.lite .card::after,html.lite .plan::after{display:none}
+html.lite .hero__title .serif,html.lite .final__t .serif{text-shadow:none}
+html.lite .progress i{box-shadow:none}
+html.lite .btn--cy:hover{box-shadow:none}

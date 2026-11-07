@@ -11,14 +11,14 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const hoverOk = matchMedia('(hover:hover)').matches;
-const narrow = innerWidth < 700;
+const lite = document.documentElement.classList.contains('lite');
 
 $$('[data-wa]').forEach((a) => (a.href = linkWa(a.dataset.wa)));
 $('#fab').href = linkWa('geral');
 
 // luz de fundo e rastro
 if (!reduce) {
-  startDust($('#dust'), { count: narrow ? 50 : 110 });
+  startDust($('#dust'), { count: lite ? 34 : 110, lite });
 }
 
 // sempre começa do topo, inclusive ao recarregar
@@ -86,7 +86,7 @@ function reveal() {
     .to('.pre__brand span', { yPercent: -110, duration: 0.7, stagger: 0.08, ease: 'power4.in' }, '+=0.15')
     .to('.pre', { opacity: 0, duration: 0.8, ease: 'power2.inOut' }, '-=0.2')
     .to(heroChars, { yPercent: 0, rotate: 0, duration: 1.2, stagger: 0.028, ease: 'power4.out' }, '-=0.5')
-    .from('.hero .eyebrow,.hero__sub,.hero__cta,.badge,.fab', { opacity: 0, y: 26, duration: 1, stagger: 0.09, ease: 'power3.out' }, '-=0.9');
+    .from('.hero .eyebrow,.hero__sub,.hero__cta,.badge', { opacity: 0, y: 26, duration: 1, stagger: 0.09, ease: 'power3.out' }, '-=0.9');
 }
 
 // ---------- scroll ----------
@@ -123,9 +123,17 @@ function setupScroll() {
   }
 
   // orbes e barra de progresso
-  gsap.to('.orb--a', { y: 260, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1 } });
-  gsap.to('.orb--b', { y: -320, x: -80, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1 } });
-  gsap.to('.orb--c', { y: -500, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1 } });
+  if (!lite) { // paralaxe das luzes só no desktop (pesa no celular)
+    gsap.to('.orb--a', { y: 260, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1 } });
+    gsap.to('.orb--b', { y: -320, x: -80, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1 } });
+    gsap.to('.orb--c', { y: -500, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1 } });
+  }
+
+  // botão do WhatsApp: aparece da segunda seção em diante e some na última (que já tem o botão grande)
+  ScrollTrigger.create({
+    trigger: '#manifesto', start: 'top 60%', endTrigger: '#final', end: 'top 60%',
+    onToggle: (self) => $('#fab').classList.toggle('on', self.isActive),
+  });
   gsap.to('#progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.2 } });
 
   // hero sai com profundidade
@@ -137,7 +145,8 @@ function setupScroll() {
   words.forEach((w) => { w.innerHTML = `<span class="mwi">${w.innerHTML}</span>`; });
   const splits = words.map((w) => SplitText.create($('.mwi', w), { type: 'words,chars' }).chars);
   gsap.set(words, { opacity: 1 });
-  gsap.set(splits.flat(), { opacity: 0, yPercent: 60, filter: 'blur(10px)' });
+  const BL = lite ? 'blur(0px)' : 'blur(10px)'; // blur animado pesa no celular
+  gsap.set(splits.flat(), { opacity: 0, yPercent: 60, filter: BL });
   // toca sozinho ao chegar, com tempo para ler, e libera a rolagem na última frase
   const skip = $('#skip');
   let played = false, finished = false;
@@ -164,7 +173,7 @@ function setupScroll() {
   splits.forEach((chars, i) => {
     const t = i * STEP;
     mt.to(chars, { opacity: 1, yPercent: 0, filter: 'blur(0px)', duration: 0.6, stagger: 0.02, ease: 'power3.out' }, t);
-    if (i < splits.length - 1) mt.to(chars, { opacity: 0, yPercent: -55, filter: 'blur(10px)', duration: 0.4, stagger: 0.01, ease: 'power3.in' }, t + STEP - 0.15);
+    if (i < splits.length - 1) mt.to(chars, { opacity: 0, yPercent: -55, filter: BL, duration: 0.4, stagger: 0.01, ease: 'power3.in' }, t + STEP - 0.15);
   });
   skip.addEventListener('click', () => { mt.eventCallback('onComplete', null); mt.progress(1); advance(); });
   if (reduce) { settle(); played = true; }

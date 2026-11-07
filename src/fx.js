@@ -1,57 +1,46 @@
-// Partículas de luz com profundidade + rastro luminoso do mouse
-const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-
-export function startDust(canvas, { count = 110 } = {}) {
+// Partículas de luz ao fundo: leves (sprite pré-desenhado), proporcionais à tela e com movimento próprio.
+export function startDust(canvas, { count = 110, lite = false } = {}) {
   const c = canvas.getContext('2d');
-  let w, h, dpr, parts = [], scroll = 0, raf;
+  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+  let w, h, dpr, scale, parts = [], scroll = 0, raf, last = 0;
+
+  // sprite do brilho, desenhado uma única vez
+  const S = 64, sprite = document.createElement('canvas');
+  sprite.width = sprite.height = S;
+  const sc = sprite.getContext('2d'), g = sc.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+  g.addColorStop(0, 'rgba(190,250,255,1)'); g.addColorStop(0.3, 'rgba(34,227,245,.38)'); g.addColorStop(1, 'rgba(34,227,245,0)');
+  sc.fillStyle = g; sc.fillRect(0, 0, S, S);
+
   const seed = () => ({ x: Math.random(), y: Math.random(), z: Math.random() * 0.9 + 0.1, s: Math.random() * 6.28 });
   const resize = () => {
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    dpr = Math.min(devicePixelRatio || 1, lite ? 1.5 : 2);
     w = canvas.width = innerWidth * dpr; h = canvas.height = innerHeight * dpr;
-    parts = Array.from({ length: count }, seed);
+    scale = Math.min(1, Math.max(0.42, innerWidth / 1440)); // celular: partículas proporcionais à tela
+    if (!parts.length) parts = Array.from({ length: count }, seed);
   };
   resize(); addEventListener('resize', resize);
   addEventListener('mousemove', (e) => { mouse.tx = e.clientX / innerWidth - 0.5; mouse.ty = e.clientY / innerHeight - 0.5; });
   addEventListener('scroll', () => (scroll = scrollY), { passive: true });
 
-  const draw = (t) => {
-    mouse.x += (mouse.tx - mouse.x) * 0.04; mouse.y += (mouse.ty - mouse.y) * 0.04;
+  const frame = (now) => {
+    raf = requestAnimationFrame(frame);
+    if (lite && now - last < 33) return; // ~30 fps no celular
+    const dt = Math.min((now - last) / 1000, 0.1) || 0.016; last = now;
+    mouse.x += (mouse.tx - mouse.x) * 0.05; mouse.y += (mouse.ty - mouse.y) * 0.05;
     c.clearRect(0, 0, w, h);
     c.globalCompositeOperation = 'lighter';
     for (const p of parts) {
-      p.y -= 0.00006 * p.z; if (p.y < -0.05) { p.y = 1.05; p.x = Math.random(); }
-      const x = ((p.x + Math.sin(t / 3000 + p.s) * 0.012 - mouse.x * 0.08 * p.z) % 1 + 1) % 1 * w;
-      const y = (((p.y - (scroll * 0.00008 * p.z)) % 1 + 1) % 1) * h + mouse.y * -60 * p.z * dpr;
-      const r = (1 + p.z * 2.4) * dpr;
-      const a = 0.18 + p.z * 0.45 * (0.6 + 0.4 * Math.sin(t / 900 + p.s));
-      const g = c.createRadialGradient(x, y, 0, x, y, r * 4);
-      g.addColorStop(0, `rgba(159,245,255,${a})`); g.addColorStop(0.35, `rgba(34,227,245,${a * 0.35})`); g.addColorStop(1, 'rgba(34,227,245,0)');
-      c.fillStyle = g; c.beginPath(); c.arc(x, y, r * 4, 0, 6.283); c.fill();
+      p.y -= (0.018 + 0.05 * p.z) * dt; // sobe sozinha (tela/segundo)
+      if (p.y < -0.06) { p.y = 1.06; p.x = Math.random(); }
+      const sway = Math.sin(now / 2600 + p.s) * 0.018 * p.z;
+      const x = (((p.x + sway - mouse.x * 0.08 * p.z) % 1 + 1) % 1) * w;
+      const y = (((p.y - scroll * 0.00008 * p.z) % 1 + 1) % 1) * h - mouse.y * 60 * p.z * dpr;
+      const r = (1 + p.z * 2.4) * dpr * scale * 4;
+      c.globalAlpha = Math.min(1, 0.2 + p.z * 0.5 * (0.6 + 0.4 * Math.sin(now / 900 + p.s)));
+      c.drawImage(sprite, x - r, y - r, r * 2, r * 2);
     }
-    raf = requestAnimationFrame(draw);
+    c.globalAlpha = 1;
   };
-  raf = requestAnimationFrame(draw);
-  document.addEventListener('visibilitychange', () => { cancelAnimationFrame(raf); if (!document.hidden) raf = requestAnimationFrame(draw); });
-}
-
-export function startTrail(canvas) {
-  const c = canvas.getContext('2d');
-  let w, h, dpr; const pts = [];
-  const resize = () => { dpr = Math.min(devicePixelRatio || 1, 2); w = canvas.width = innerWidth * dpr; h = canvas.height = innerHeight * dpr; };
-  resize(); addEventListener('resize', resize);
-  addEventListener('mousemove', (e) => pts.push({ x: e.clientX * dpr, y: e.clientY * dpr, a: 1 }));
-  const draw = () => {
-    c.clearRect(0, 0, w, h);
-    c.globalCompositeOperation = 'lighter'; c.lineCap = 'round'; c.lineJoin = 'round';
-    for (let i = pts.length - 1; i > 0; i--) {
-      const p = pts[i], q = pts[i - 1];
-      p.a -= 0.028;
-      if (p.a <= 0) { pts.splice(0, i); break; }
-      c.strokeStyle = `rgba(34,227,245,${p.a * 0.55})`; c.lineWidth = (1 + p.a * 5) * dpr;
-      c.shadowBlur = 18 * dpr; c.shadowColor = 'rgba(34,227,245,.9)';
-      c.beginPath(); c.moveTo(q.x, q.y); c.lineTo(p.x, p.y); c.stroke();
-    }
-    requestAnimationFrame(draw);
-  };
-  requestAnimationFrame(draw);
+  raf = requestAnimationFrame(frame);
+  document.addEventListener('visibilitychange', () => { cancelAnimationFrame(raf); if (!document.hidden) raf = requestAnimationFrame(frame); });
 }
