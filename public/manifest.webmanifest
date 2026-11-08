@@ -1,11 +1,17 @@
 {
-  "name": "Vitor de Melo · Sites que vendem",
+  "name": "Vitor de Melo · Sites, aplicativos e sistemas",
   "short_name": "Vitor de Melo",
+  "description": "Criação de sites, aplicativos e sistemas que vendem.",
   "start_url": ".",
   "scope": ".",
   "display": "fullscreen",
   "orientation": "portrait",
   "background_color": "#03080a",
   "theme_color": "#03080a",
-  "lang": "pt-BR"
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
 }

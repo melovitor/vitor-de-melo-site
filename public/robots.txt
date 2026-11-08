@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://melovitor.github.io/vitor-de-melo-site/sitemap.xml

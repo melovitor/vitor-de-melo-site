@@ -362,3 +362,19 @@ html.lite .btn--cy:hover{box-shadow:none}
 html,body{overflow-x:clip;max-width:100%;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom}
 body{position:relative;width:100%}
 main,section{max-width:100%}
+
+/* ===== v7: serviços + perguntas frequentes (SEO) ===== */
+.svc,.faq{padding:var(--sec-top) 0 var(--sec-bot)}
+.svc__grid{padding:0 var(--pad);display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1400px;margin:0 auto}
+.svc .card__n{font-size:clamp(30px,4.6vh,40px);color:var(--cy-soft)}
+.svc .card p{font-size:14px}
+.faq__list{width:min(980px,calc(100% - 2*var(--pad)));margin:0 auto;border-top:1px solid var(--glass-bd)}
+.faq details{border-bottom:1px solid var(--glass-bd)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;
+  padding:clamp(14px,2.4vh,20px) 0;font:500 clamp(17px,min(2vw,3.2vh),24px)/1.3 var(--sans);letter-spacing:-.02em;transition:color .3s}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 1.4em/1 var(--serif);color:var(--cy);transition:transform .35s;flex:none}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq summary:hover{color:var(--cy-soft)}
+.faq details p{color:var(--mut);font-weight:300;line-height:1.65;font-size:15px;padding:0 40px 20px 0;max-width:760px}
+@media (max-width:1000px){.svc__grid{grid-template-columns:1fr}.svc .card{min-height:0}}

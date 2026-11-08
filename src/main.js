@@ -261,3 +261,6 @@ function setupScroll() {
 
 if (reduce) { $('#pre').remove(); document.body.classList.remove('is-loading'); lenis.start(); setupScroll(); }
 else preloader();
+
+// perguntas frequentes: abrir/fechar muda a altura da página, então recalcula as animações de scroll
+$$('.faq details').forEach((d) => d.addEventListener('toggle', () => ScrollTrigger.refresh()));

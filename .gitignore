@@ -4,3 +4,4 @@ dist/
 # módulo de som que foi desativado e não é usado
 src/audio.js
 publicar.sh
+logos-opcoes/check.html
