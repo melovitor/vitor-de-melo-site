@@ -378,3 +378,7 @@ main,section{max-width:100%}
 .faq summary:hover{color:var(--cy-soft)}
 .faq details p{color:var(--mut);font-weight:300;line-height:1.65;font-size:15px;padding:0 40px 20px 0;max-width:760px}
 @media (max-width:1000px){.svc__grid{grid-template-columns:1fr}.svc .card{min-height:0}}
+
+/* "o seu nível." é o ponto focal: nunca quebra em duas linhas */
+.nw{white-space:nowrap;display:inline-block}
+.btn--xl{white-space:nowrap}
