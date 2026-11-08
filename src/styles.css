@@ -1,3 +1,11 @@
+/* fontes no próprio site (antes vinham do Google Fonts e travavam ~1s no celular); só latim e só os pesos usados */
+@import "@fontsource/manrope/latin-300.css";
+@import "@fontsource/manrope/latin-400.css";
+@import "@fontsource/manrope/latin-500.css";
+@import "@fontsource/manrope/latin-600.css";
+@import "@fontsource/instrument-serif/latin-400.css";
+@import "@fontsource/instrument-serif/latin-400-italic.css";
+
 :root{
   --bg:#03080a; --fg:#eef6f7; --mut:#93a6aa; --cy:#22e3f5; --cy-soft:#9ff5ff; --cy-deep:#0a8fa0;
   --glass:rgba(255,255,255,.045); --glass-bd:rgba(255,255,255,.12);
@@ -382,3 +390,12 @@ main,section{max-width:100%}
 /* "o seu nível." é o ponto focal: nunca quebra em duas linhas */
 .nw{white-space:nowrap;display:inline-block}
 .btn--xl{white-space:nowrap}
+
+/* ===== v8: home: links de "saiba mais" nos cartões de serviço e rodapé com páginas */
+.svc .card{display:flex;flex-direction:column}
+.svc .card .more{margin-top:auto;padding-top:14px;color:var(--cy-soft);font-size:14px;font-weight:500;position:relative;z-index:1}
+.svc .card .more:hover{color:var(--fg)}
+.foot-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);width:100%}
+.foot-nav a:hover{color:var(--cy-soft)}
+.final .foot-nav{margin-top:auto;padding-top:60px}
+.final .foot-nav + .foot{margin-top:0;padding-top:22px}

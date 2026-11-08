@@ -79,7 +79,9 @@ function preloader() {
 }
 
 function reveal() {
-  const heroChars = SplitText.create('.hero__title .ln > span', { type: 'words,chars' }).chars;
+  // o nome acessível fica no h1 (aria-label em <span> é proibido e o Lighthouse acusa)
+  $('.hero__title').setAttribute('aria-label', $('.hero__title').textContent.replace(/\s+/g, ' ').trim());
+  const heroChars = SplitText.create('.hero__title .ln > span', { type: 'words,chars', aria: 'hidden' }).chars;
   gsap.set(heroChars, { yPercent: 125, rotate: 6 });
   gsap.timeline({ onComplete: () => { $('#pre').remove(); document.body.classList.remove('is-loading'); scrollTo(0, 0); lenis.scrollTo(0, { immediate: true, force: true }); lenis.start(); setupScroll(); } })
     .to('.pre__bar,.pre__pct', { opacity: 0, duration: 0.4 })
@@ -142,8 +144,8 @@ function setupScroll() {
 
   // manifesto: letra por letra
   const words = $$('.mw');
-  words.forEach((w) => { w.innerHTML = `<span class="mwi">${w.innerHTML}</span>`; });
-  const splits = words.map((w) => SplitText.create($('.mwi', w), { type: 'words,chars' }).chars);
+  words.forEach((w) => { w.setAttribute('aria-label', w.textContent.replace(/\s+/g, ' ').trim()); w.innerHTML = `<span class="mwi">${w.innerHTML}</span>`; });
+  const splits = words.map((w) => SplitText.create($('.mwi', w), { type: 'words,chars', aria: 'hidden' }).chars);
   gsap.set(words, { opacity: 1 });
   const BL = lite ? 'blur(0px)' : 'blur(10px)'; // blur animado pesa no celular
   gsap.set(splits.flat(), { opacity: 0, yPercent: 60, filter: BL });

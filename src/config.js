@@ -8,5 +8,10 @@ export const mensagens = {
 
 export function linkWa(chave) {
   const texto = chave === 'geral' ? mensagens.geral : mensagens.plano(chave);
+  return linkTexto(texto);
+}
+
+// mensagem livre (usada nas páginas de serviço: cada uma abre o WhatsApp com o assunto dela)
+export function linkTexto(texto) {
   return `https://wa.me/${whatsapp}?text=${encodeURIComponent(texto)}`;
 }
